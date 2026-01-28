@@ -1,0 +1,80 @@
+Project Food_Bank_Finder {
+  database_type: 'PostgreSQL'
+  Note: 'App to find info about nearby food banks and check their food pantry contents'
+  Note: 'Uses metric units for measurements'
+}
+
+Table FoodBanks as FB {
+  id int [pk,increment]
+  name varchar(75) [not null, note: "75 length?"]
+  unit_no int [note: "the unit # if it is in a plaza or shared space"]
+  street varchar(50) [not null, note: "example: 1025 Google Way"]
+  city varchar(20) [not null]
+  province varchar(20) [not null, note: "or state depending on country"]
+  country varchar(20) [not null]
+  postal_code varchar(7) [not null, note: "length will change depending on country"]
+  longitude decimal [not null]
+  latitude decimal [not null]
+  website text 
+  phone int [not null]
+  fax int
+  charity_registration_no varchar 
+  admin int [ref: <> user.id, note: "admin can modify the food bank info"]
+  staff array [ref: < user.id, note: "staff can modify inventory only, not fb info"]
+}
+
+Table user {
+  id int [pk, increment]
+  username varchar(25) [not null]
+}
+
+Table RegularHours as rhours {
+  fb_id int [not null, ref: > FB.id]
+  weekday int [not null, note: "Sunday is day 1, Monday day 2, etc"]
+  opening_hr time  [not null, note: "time with timezone in postgresql"]
+  closing_hr time [not null, note: "time with timezone in postgresql"]
+}
+
+Table FoodInventory {
+  fb_id int [not null, ref:   - FoodBanks.id]
+  food_id int  [not null, ref: <> Food.id]
+  quantity int [default: 0]
+}
+
+Table BoxInventory as PB {
+  fb_id int [not null, ref:   - FoodBanks.id]
+  box_id int [not null, ref: < Box.id]
+  quantity int [default: 0]
+}
+
+Table Food {
+  id int [pk, increment]
+  name varchar(30) [not null]
+  description varchar(100)
+  category varchar [not null, ref: > Category.id]
+  box int [ref: <> Box.id]
+  barcode varchar(13)
+}
+
+Table Category {
+  id int [pk, increment]
+  name varchar(25) [not null]
+}
+
+Table Box {
+  id int [increment,pk]
+  fb_id int [ref: > FB.id]
+  name varchar(35) [not null, note: "short desc of this box for display purposes"]
+  min int [note: "the minimum amount of boxes before we need to make more?"]
+}
+
+Table user_passwords {
+  user_id int [pk, not null, ref: - user.id]
+  password varchar(64) [not null]
+}
+
+Table FB_secrets {
+  fb_id int [pk,not null, ref: - FoodBanks.id]
+  password varchar(64) [not null]
+  api_key varchar(64) [note: "may be used to allow employees to sign up automatically to their organization?"]
+}
