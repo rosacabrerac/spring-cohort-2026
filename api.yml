@@ -12,6 +12,7 @@ components:
         id:
           type: integer
           example: 1
+          minimum: 1
         username:
           type: string
           minLength: 3
@@ -25,6 +26,7 @@ components:
         id:
           type: integer
           example: 1
+          minimum: 1
         name:
           type: string
           minLength: 3
@@ -78,6 +80,16 @@ components:
           type: number
           format: decimal
           description: not part of MVP
+        temporarily_closed:
+          type: boolean
+          default: false 
+          description: not part of MVP. If true, client will show 'Temporarily Closed' otherwise, the client will compare their own client's timzene with the foodbank's original timezone to figure out the current open/closed status
+        Hours:
+          $ref: '#/components/schemas/Hours'
+        primary_admin:
+          $ref: '#/components/schemas/User'
+        secondary_admin:
+          $ref: '#/components/schemas/User'
 
     Category:
       type: object
@@ -97,12 +109,10 @@ components:
         id:
           type: integer
           example: 1
-        fb_id:
-          type: integer
-          example: 1
         weekday:
           type: integer
-          example: 3
+          description: 1 is for Sunday, 2 for Monday, etc
+          example: 1
           minimum: 1
           maximum: 7
         opening_hr: 
@@ -111,31 +121,6 @@ components:
         closing_hr:
           type: integer
           format: time 
-        temporarily_closed:
-          type: boolean
-          default: false 
-  
-    FoodInventory:
-      type: object 
-      properties:
-        fb_id: 
-          type: integer
-        food_id:
-          type: integer
-        quantity:
-          type: integer
-          default: 0
-
-    BoxInventory:
-      type: object
-      properties:
-        fb_id:
-          type: integer
-        box_id:
-          type: integer
-        quantity:
-          type: integer
-          default: 0    
       
     Food:
       type: object
@@ -157,7 +142,10 @@ components:
           type: integer
           minLength: 1
           maxLength: 13
-  
+        quantity:
+          type: integer
+          default: 0    
+
     Box:
       type: object
       required:
@@ -174,6 +162,9 @@ components:
           type: integer
           minimum: 1
           description: the food bank id
+        quantity:
+          type: integer
+          default: 0    
       description: ''
 
     ErrorResponse:
@@ -225,7 +216,7 @@ paths:
               schema:
                 $ref: '#/components/responses/InternalServerError'
   # list of all registered food banks
-  /fb:
+  /foodbank:
     get:
       description: 'returns all food banks list'
       responses:
@@ -264,54 +255,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/InternalServerError'
-  /hours: 
-    get:
-      description: 'returns hours'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Hours'
-  /food_inventory:
-    get:
-      description: 'returns a list of food inventories'  
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/FoodInventory'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InternalServerError'   
-  /box_inventory:
-    get:
-      description: "returns the list of box inventories"
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/BoxInventory'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/responses/InternalServerError'
+
   /food:
     get:
       description: "Returns the food list"
@@ -331,7 +275,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/InternalServerError'
-  /boxes:
+  /box:
     get:
       description: "returns the list of boxes"
 
