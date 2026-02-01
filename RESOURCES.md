@@ -19,6 +19,7 @@ This document centralizes all resources, documentation, and tools for the Commun
 - [Git For Teams](https://www.youtube.com/watch?v=xhzLIfJYTLs)
 - [GitHub](https://github.com)
 - [Astro Tutorial](https://docs.astro.build/en/tutorial/0-introduction/)
+- [freeCodeCamp Astro Tutorial](https://www.youtube.com/watch?v=e-hTm5VmofI)
 - [User Stories](https://docs.nhcarrigan.com/mentorship/resources/user-stories/)
 - [Technical Breakdown](https://docs.nhcarrigan.com/mentorship/resources/technical-breakdown/)
 - [Project Planning](https://docs.nhcarrigan.com/mentorship/resources/project-planning/)
